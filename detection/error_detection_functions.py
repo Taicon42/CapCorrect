@@ -3,6 +3,7 @@
 Functions responsible for the detection of errors in the text, masking the errors, and returning important
 data for the error_detection and exporting_functions to use.
 """
+from transformers import AutoModelForMaskedLM, AutoTokenizer
 
 
 def get_matches(text, client):
@@ -166,7 +167,7 @@ def detect_errors(text, client, profanity_bool):
             # Update the loop variable
             i += 1
 
-        return sequence_switched, endMatches, offset_list, err_message
+        return sequence_switched, end_matches, offset_list, err_message
 
     else:
         return "", [], [], ""

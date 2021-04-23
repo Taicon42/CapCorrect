@@ -3,7 +3,9 @@
 Functions that initialize important libraries, get contents from the imported file, and format the content
 for easy usability
 """
-
+import re
+import spacy
+from grammarbot import GrammarBotClient
 
 def initialize_apis():
     """Initialize APIs Function

@@ -3,6 +3,9 @@
 Functions that are responsible for the process of generating possible corrections, swapping out mask tokens
 with the corrections, and returning the new sentence list.
 """
+import error_detection_functions as edf
+import torch
+
 
 
 def initialize_suggestion_list(suggestion_num):
@@ -18,7 +21,7 @@ def initialize_suggestion_list(suggestion_num):
     return suggestion_list
 
 
-def section_decision(indexer, sentence, offset_list):
+def section_decision(indexer, sentence, offset_list, end_matches):
     """Decides what section mask token is in
 
     Returns a specific section of the sentence given which error is being worked on by splitting the text
@@ -28,7 +31,7 @@ def section_decision(indexer, sentence, offset_list):
         # First section:
         mask_str = sentence[:offset_list[indexer]]
 
-    elif indexer == (len(endMatches) - 1):
+    elif indexer == (len(end_matches) - 1):
         # The last section:
         mask_str = sentence[offset_list[indexer - 1]:]
 
@@ -39,7 +42,7 @@ def section_decision(indexer, sentence, offset_list):
     return mask_str
 
 
-def get_top_tokens(sequence_switched, indexer, tokenizer, model):
+def get_top_tokens(sequence_switched, indexer, tokenizer, model, suggestion_num):
     """Generates the suggestions for the error"""
     token_input = tokenizer.encode(sequence_switched, return_tensors="pt")
     mask_token_index = torch.where(token_input == tokenizer.mask_token_id)[1]
@@ -49,10 +52,10 @@ def get_top_tokens(sequence_switched, indexer, tokenizer, model):
     return top_tokens
 
 
-def replace_tokens(the_string, sequence_switched, suggestion_list, indexer, tokenizer, model):
+def replace_tokens(the_string, sequence_switched, suggestion_list, indexer, tokenizer, model, suggestion_num):
     """Replaces tokens with suggestions stored in the suggestion list"""
     # Get top tokens
-    top_tokens = get_top_tokens(sequence_switched, indexer, tokenizer, model)
+    top_tokens = get_top_tokens(sequence_switched, indexer, tokenizer, model, suggestion_num)
 
     iterator = 0
     for token in top_tokens:
@@ -71,7 +74,7 @@ def replace_errors(suggestion_num, sequence_switched, end_matches, offset_list):
     if len(end_matches) != 0:
         # Initialize Variables
         new_list = initialize_suggestion_list(suggestion_num)
-        tokenizer, model = initialize_tokenizer_variables()
+        tokenizer, model = edf.initialize_tokenizer_variables()
 
         # Swapping masks with corrections section
         if len(end_matches) > 1:
@@ -82,12 +85,12 @@ def replace_errors(suggestion_num, sequence_switched, end_matches, offset_list):
 
             while keep_going:
                 # Determine what section to locate mask token in
-                mask_str = section_decision(j, sequence_switched, offset_list)
+                mask_str = section_decision(j, sequence_switched, offset_list, end_matches)
 
-                new_list = replace_tokens(mask_str, sequence_switched, new_list, j, tokenizer, model)
+                new_list = replace_tokens(mask_str, sequence_switched, new_list, j, tokenizer, model, suggestion_num)
 
                 # If end of sentence, return j to 0, else continue iterations
-                if j == (len(endMatches) - 1):
+                if j == (len(end_matches) - 1):
                     # Update variables
                     j = 0
                     current += 1
@@ -99,7 +102,8 @@ def replace_errors(suggestion_num, sequence_switched, end_matches, offset_list):
                 k += 1
 
         else:
-            new_list = replace_tokens(sequence_switched, sequence_switched, new_list, 0, tokenizer, model)
+            new_list = replace_tokens(sequence_switched, sequence_switched, new_list, 0, tokenizer, model,
+                                      suggestion_num)
 
         return new_list
 
