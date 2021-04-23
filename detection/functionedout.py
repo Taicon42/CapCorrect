@@ -34,7 +34,7 @@ def initialize_apis():
     """Maybe not necessary to place in a function"""
     # nlp = spacy.load("en_core_web_sm")
     nlp = spacy.load("en_core_web_sm")
-    my_api_key = '782558b415msh8b5088cb428bca0p1ed60djsn0da2ee6624be'
+    my_api_key = <'insert key here'>
     client = GrammarBotClient(api_key=my_api_key)
     return nlp, client
 
