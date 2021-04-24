@@ -18,9 +18,9 @@ allow_profanity = False
 
 if os.path.exists(filename):
     # Setup functions
-    text, timestamps = pf.get_file(filename)
-    nlp, client = pf.initialize_apis()
-    sentences = pf.format_text(nlp, text)
+    text_list, timestamps = pf.get_file(filename)
+    client = pf.initialize_api()
+    sentences = pf.print_sentences(text_list)
     suggestion_num = 5
 
     # Setup dictionary list

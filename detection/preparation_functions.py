@@ -4,20 +4,17 @@ Functions that initialize important libraries, get contents from the imported fi
 for easy usability
 """
 import re
-import spacy
 from grammarbot import GrammarBotClient
 
 
-def initialize_apis():
-    """Initialize APIs Function
+def initialize_api():
+    """Initialize API Function
 
     Make sure to enter in a GrammarBot api key to run program
     """
-    # nlp = spacy.load("en_core_web_sm")
-    nlp = spacy.load("en_core_web_sm")
     my_api_key = <'insert key here'>
     client = GrammarBotClient(api_key=my_api_key)
-    return nlp, client
+    return client
 
 
 def get_file(file_name):
@@ -40,14 +37,14 @@ def file_read(lines):
     Strips file to get ONLY the text; No timestamps or sentence indexes added so returned string is only the
     caption text.
     """
-    new_text = ""
+    # new_text = ""
+    text_list = []
     for line in lines:
         if re.search('^[0-9]', line) is None and re.search('^[0-9]{2}:[0-9]{2}:[0-9]{2}', line)\
                 is None and re.search(
                 '^$', line) is None:
-            new_text += ' ' + line.rstrip('\n')
-        new_text = new_text.lstrip()
-    return new_text
+            text_list.append(line.rstrip('\n'))
+    return text_list
 
 
 def get_timestamps(lines):
@@ -63,13 +60,12 @@ def get_timestamps(lines):
     return timestamps
 
 
-def format_text(nlp, text):
-    """Formatting Text Function
+def print_sentences(text):
+    """Prints the sentences by
 
     Formats the text string into a list containing individual sentences. Returns this list.
     """
-    doc = nlp(text)
-    sentences = list(doc.sents)
+    sentences = text
     for i, token in enumerate(sentences):
-        print('Sentence #%d: %s' % (i, token.text))
+        print('Sentence #%d: %s' % ((i + 1), token))
     return sentences
