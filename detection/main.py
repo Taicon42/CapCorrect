@@ -3,40 +3,42 @@ import preparation_functions as pf
 import error_detection_functions as edf
 import error_correction_functions as ecf
 import exporting_functions as ef
-
+import os
 
 # pip install transformers
 
 # pip install grammarbot
 
-import re
-import spacy
-import json
-import torch
-
-from transformers import pipeline, AutoModelForMaskedLM, AutoTokenizer, AutoModelWithLMHead
-from grammarbot import GrammarBotClient
-
 
 """Main for Caption Correction"""
-# Setup functions
-text, timestamps = pf.get_file("GenerateSRT.txt")
-nlp, client = pf.initialize_apis()
-sentences = pf.format_text(nlp, text)
-suggestion_num = 5
+# Get filename
+# filename = "GenerateSRT.txt"
+filename = input("What is the name of the file you want to correct? \n")
+allow_profanity = False
 
-# Setup dictionary list
-dictionary_list = []
+if os.path.exists(filename):
+    # Setup functions
+    text, timestamps = pf.get_file(filename)
+    nlp, client = pf.initialize_apis()
+    sentences = pf.format_text(nlp, text)
+    suggestion_num = 5
 
-# Main/Full error correction process
-for i, token in enumerate(sentences):
-    sequence_switched, end_matches, offset_list, err_message = edf.detect_errors(str(sentences[i]), client, False)
-    suggestion_list = ecf.replace_errors(suggestion_num, sequence_switched, end_matches, offset_list)
+    # Setup dictionary list
+    dictionary_list = []
 
-    # Create readout and dictionary objects
-    result = ef.print_readout(suggestion_list, err_message, sequence_switched)
-    dictionary = ef.create_dictionary(timestamps[i], sentences[i], sequence_switched, err_message, suggestion_list)
-    dictionary_list.append(dictionary)
-    print(result)
+    # Main/Full error correction process
+    for i, token in enumerate(sentences):
+        sequence_switched, end_matches, offset_list, err_message = edf.detect_errors(str(sentences[i]), client,
+                                                                                     allow_profanity)
+        suggestion_list = ecf.replace_errors(suggestion_num, sequence_switched, end_matches, offset_list)
 
-print(dictionary_list)
+        # Create readout and dictionary objects
+        result = ef.print_readout(suggestion_list, err_message, sequence_switched)
+        dictionary = ef.create_dictionary(timestamps[i], sentences[i], sequence_switched, err_message, suggestion_list)
+        dictionary_list.append(dictionary)
+        print(result)
+
+    print(dictionary_list)
+
+else:
+    print("File couldn't be found.")

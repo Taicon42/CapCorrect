@@ -7,6 +7,7 @@ import re
 import spacy
 from grammarbot import GrammarBotClient
 
+
 def initialize_apis():
     """Initialize APIs Function
 

@@ -105,7 +105,7 @@ def update_for_profanity(match, allow_profanity, sequence_switched, altering_tex
         if allow_profanity:
             sequence_switched += altering_text[last_offset:offset+length]
             last_offset = offset + length
-            del endMatches[i]
+            del end_matches[i]
         else:
             sequence_switched, last_offset, offset_list = update_traverse_variables(sequence_switched,
                                                                                     altering_text, offset,
