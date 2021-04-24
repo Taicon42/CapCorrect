@@ -1,0 +1,43 @@
+# .yml file for CapCorrect serverless webpage script
+
+# service invoked from serverless.com
+service: cappagereturn
+
+# app and org for use with dashboard.serverless.com
+app: cccapstone
+org: taicon42
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: python3.8
+  lambdaHashingVersion: 20201221
+
+plugins:
+  - serverless-python-requirements
+
+package:
+  exclude:
+  - venv/**
+  - .idea/**
+  - .git/**
+
+custom:
+  pythonRequirements:
+    # Docker takes requirements.txt and zips necessary modules as well as script
+    # to create container image usable by AWS Lambda
+    dockerizePip: non-linux
+    slim: true
+    zip: true         # Folders are zipped and sent to S3 cloud storage if they exceed 50MB
+
+
+functions:
+  # Refers to 'handler' function in handler.py, currenlty taking no params
+  # Has fix output, resolve import spacy to continue
+  handler:
+    handler: handler.handler
+    # Spacy layers for 'import spacy' in AWS Lambda  
+    layers:
+      - arn:aws:lambda:us-east-1:770693421928:layer:Klayers-python38-requests:16
+      - arn:aws:lambda:us-east-1:770693421928:layer:Klayers-python38-spacy_model_en_small:1
