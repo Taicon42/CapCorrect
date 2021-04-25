@@ -12,7 +12,7 @@ def initialize_api():
 
     Make sure to enter in a GrammarBot api key to run program
     """
-    my_api_key = '782558b415msh8b5088cb428bca0p1ed60djsn0da2ee6624be'
+    my_api_key = <'enter key here'>
     client = GrammarBotClient(api_key=my_api_key)
     return client
 
