@@ -31,20 +31,6 @@ def get_file(file_name):
     return text, timestamps
 
 
-def get_allow_profanity():
-    allow_profanity = False
-    while True:
-        profane_input = input(
-            "Would you like to have profanity filtered?  Enter \'Yes\' if so. Enter \'No\' if not. \n")
-        if profane_input == "No" or profane_input == "no":
-            allow_profanity = True
-            return allow_profanity
-        elif profane_input == "Yes" or profane_input == "yes":
-            return allow_profanity
-        else:
-            print("Invalid input. \n")
-
-
 def file_read(lines):
     """ Function for the file reading process
 

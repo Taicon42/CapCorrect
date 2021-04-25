@@ -1,0 +1,15 @@
+1
+00:00:02,000 --> 00:00:08,000
+A shit tert sentence with not one, not towl, but three fucking eror inside it.
+
+2
+00:00:08,001 --> 00:00:9,000
+A sentence written perfectly.
+
+3
+00:00:09,001 --> 00:00:10,000
+A second sentence where the error is fauertr in the sentence.
+
+4
+00:00:10,001 --> 00:00:15,000
+A third sctreas where the errors are diffrt but still clear.

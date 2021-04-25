@@ -10,12 +10,15 @@ import os
 # pip install grammarbot
 
 
-"""Main for Caption Correction"""
+"""Main for Caption Correction
+
+Slightly altered for testing purposes, specifically addition of 'final_error_total' and 'sentence_error_total'.
+The detect_errors() and update_error_message() functions are altered to return these values.
+"""
 # Get filename
 # filename = "GenerateSRT.txt"
 filename = input("What is the name of the file you want to correct? \n")
-allow_profanity = pf.get_allow_profanity()
-
+allow_profanity = True
 
 if os.path.exists(filename):
     # Setup functions
@@ -23,14 +26,17 @@ if os.path.exists(filename):
     client = pf.initialize_api()
     sentences = pf.print_sentences(text_list)
     suggestion_num = 5
+    final_error_total = 0
 
     # Setup dictionary list
     dictionary_list = []
 
     # Main/Full error correction process
     for i, token in enumerate(sentences):
-        sequence_switched, end_matches, offset_list, err_message = edf.detect_errors(str(sentences[i]), client,
-                                                                                     allow_profanity)
+        sequence_switched, end_matches, offset_list, err_message, sentence_error_total = \
+            edf.detect_errors(str(sentences[i]), client, allow_profanity)
+
+        final_error_total += sentence_error_total
 
         suggestion_list = ecf.replace_errors(suggestion_num, sequence_switched, end_matches, offset_list)
 
@@ -40,6 +46,7 @@ if os.path.exists(filename):
         dictionary_list.append(dictionary)
         print(result)
 
+    print(final_error_total)
     print(dictionary_list)
 
 else:
